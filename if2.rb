@@ -2,6 +2,7 @@
 
 a = 3
 
+
 if a > 7
     puts "Greater than 7"
     if a < 42
