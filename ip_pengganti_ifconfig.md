@@ -25,9 +25,13 @@ OK, karena saya sudah terbiasa dengan perintah "ifconfig" dan "route", disini sa
 
 ### Sumber
 [ifconfig vs ip](https://tty1.net/blog/2010/ifconfig-ip-comparison_en.html)
+
 [iproute2: Life after ifconfig](http://andys.org.uk/bits/2010/02/24/iproute2-life-after-ifconfig/)
+
 [ifconfig sucks](http://inai.de/2008/02/19)
+
 [Should I quit using Ifconfig?](https://serverfault.com/questions/458628/should-i-quit-using-ifconfig)
+
 [Linux Advanced Routing & Traffic Control HOWTO](http://lartc.org/howto/index.html)
 
 
