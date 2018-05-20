@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 
 # Create your models here.
 
+SKPD
 #class Event(models.Model):
 #    day = models.DateField(u'Day of the event', help_text=u'Day of the event')
 #    start_time = models.TimeField(u'Starting time', help_text=u'Starting time')
