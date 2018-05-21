@@ -35,21 +35,20 @@ class StatusPegawaiAdmin(admin.ModelAdmin):
 
 
 
-#class PegawaiAdmin(admin.ModelAdmin):
-#    list_display = ("nama_pegawai", "nip", "id_status_pegawai", "id_skpd")
-#    ordering = ["id"]
-#    list_per_page = 10
-#
-#
-#
-#class SPPDAdmin(admin.ModelAdmin):
-#    list_display = ("id", "tanggal", "id_jenis_transaksi", "id_sub_skpd", "keterangan")
-#    ordering = ["id"]
-#    save_as = True
-#    date_hierarchy = 'tanggal'
-#    search_fields = ['id']
-#    list_per_page = 10
-#    inlines = [PersediaanInline, ]
+class PegawaiAdmin(admin.ModelAdmin):
+    list_display = ("nama_pegawai", "nip", "pangkat", "id_status_pegawai", "id_skpd")
+    ordering = ["id"]
+    list_per_page = 10
+
+
+
+class SPPDAdmin(admin.ModelAdmin):
+    list_display = ("id_skpd", "no_sppd", "id_pegawai", "tanggal_berangkat", "tanggal_kembali", "keterangan")
+    ordering = ["no_sppd"]
+    save_as = True
+    date_hierarchy = 'tanggal_berangkat'
+    search_fields = ['no_sppd']
+    list_per_page = 10
 
 
 
@@ -60,5 +59,5 @@ admin.site.register(Kabupaten, KabupatenAdmin)
 admin.site.register(LokasiBidang, LokasiBidangAdmin)
 admin.site.register(SKPD, SKPDAdmin)
 admin.site.register(StatusPegawai, StatusPegawaiAdmin)
-#admin.site.register(Pegawai, PegawaiAdmin)
-#admin.site.register(SPPD, SPPDAdmin)
+admin.site.register(Pegawai, PegawaiAdmin)
+admin.site.register(SPPD, SPPDAdmin)
