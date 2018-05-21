@@ -1,9 +1,8 @@
 from django.contrib import admin
 
-from kabupaten.models import Provinsi, Kabupaten, LokasiBidang, SKPD, SUBSKPD
-from kabupaten.models import StatusPegawai, Pegawai, SPPD
+from sppd.models import Provinsi, Kabupaten, LokasiBidang, SKPD
+from sppd.models import StatusPegawai, Pegawai, SPPD
 
-from kabupaten.forms import HargaForm
 
 class ProvinsiAdmin(admin.ModelAdmin):
     list_display = ("kode_provinsi", "nama_provinsi")
@@ -61,5 +60,5 @@ admin.site.register(Kabupaten, KabupatenAdmin)
 admin.site.register(LokasiBidang, LokasiBidangAdmin)
 admin.site.register(SKPD, SKPDAdmin)
 admin.site.register(StatusPegawai, StatusPegawaiAdmin)
-admin.site.register(Pegawai, PegawaiAdmin)
-admin.site.register(SPPD, SPPDAdmin)
+#admin.site.register(Pegawai, PegawaiAdmin)
+#admin.site.register(SPPD, SPPDAdmin)
