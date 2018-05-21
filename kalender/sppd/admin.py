@@ -36,21 +36,21 @@ class StatusPegawaiAdmin(admin.ModelAdmin):
 
 
 
-class PegawaiAdmin(admin.ModelAdmin):
-    list_display = ("nama_pegawai", "nip", "id_status_pegawai", "id_skpd")
-    ordering = ["id"]
-    list_per_page = 10
-
-
-
-class SPPDAdmin(admin.ModelAdmin):
-    list_display = ("id", "tanggal", "id_jenis_transaksi", "id_sub_skpd", "keterangan")
-    ordering = ["id"]
-    save_as = True
-    date_hierarchy = 'tanggal'
-    search_fields = ['id']
-    list_per_page = 10
-    inlines = [PersediaanInline, ]
+#class PegawaiAdmin(admin.ModelAdmin):
+#    list_display = ("nama_pegawai", "nip", "id_status_pegawai", "id_skpd")
+#    ordering = ["id"]
+#    list_per_page = 10
+#
+#
+#
+#class SPPDAdmin(admin.ModelAdmin):
+#    list_display = ("id", "tanggal", "id_jenis_transaksi", "id_sub_skpd", "keterangan")
+#    ordering = ["id"]
+#    save_as = True
+#    date_hierarchy = 'tanggal'
+#    search_fields = ['id']
+#    list_per_page = 10
+#    inlines = [PersediaanInline, ]
 
 
 
