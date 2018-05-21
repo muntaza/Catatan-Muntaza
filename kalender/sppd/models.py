@@ -99,6 +99,8 @@ class Pegawai(models.Model):
                     db_column="nama_pegawai")
     nip = models.CharField("NIP", max_length=60,
                     db_column="nip")
+    pangkat = models.CharField("Pangkat", max_length=60,
+                    db_column="pangkat")
     id_status_pegawai = models.ForeignKey(StatusPegawai,
                     verbose_name="Status Pegawai",
                     db_column="id_status_pegawai")
@@ -119,21 +121,18 @@ class Pegawai(models.Model):
 class SPPD(models.Model):
     id = models.AutoField(primary_key=True, verbose_name="No Urut",
                     db_column="id")
-    nip = models.CharField("NIP", max_length=60,
-                    db_column="nip")
+    id_skpd = models.ForeignKey(SKPD,
+                    verbose_name="SKPD",
+                    db_column="id_skpd")
+    no_sppd = models.CharField("No SPPD", max_length=60,
+                    db_column="no_sppd")
+    id_pegawai = models.ForeignKey(Pegawai,
+                    verbose_name="Pegawai",
+                    db_column="id_pegawai")
     tanggal_berangkat = models.DateField("Tanggal Berangkat",
                     db_column="tanggal_berangkat")
     tanggal_kembali = models.DateField("Tanggal Kembali",
                     db_column="tanggal_kembali")
-    id_pegawai = models.ForeignKey(Pegawai,
-                    verbose_name="Pegawai",
-                    db_column="id_pegawai")
-    id_jenis_transaksi = models.ForeignKey(JenisTransaksi,
-                    verbose_name="Jenis Transaksi", null=True,
-                    db_column="id_jenis_transaksi")
-    id_sub_skpd = models.ForeignKey(SUBSKPD,
-                    verbose_name="SUB SKPD",
-                    db_column="id_sub_skpd")
     keterangan = models.CharField("Keterangan", max_length=200,
                     db_column="keterangan")
 
