@@ -137,9 +137,9 @@ class SPPD(models.Model):
                     db_column="keterangan")
 
     class Meta:
-        db_table = "transaksi"
-        verbose_name = "Transaksi"
-        verbose_name_plural = "Transaksi"
+        db_table = "sppd"
+        verbose_name = "SPPD"
+        verbose_name_plural = "SPPD"
 
     def __unicode__(self):
         return "%s" % (self.id)
