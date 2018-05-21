@@ -123,6 +123,8 @@ class SPPD(models.Model):
                     db_column="nip")
     tanggal_berangkat = models.DateField("Tanggal Berangkat",
                     db_column="tanggal_berangkat")
+    tanggal_kembali = models.DateField("Tanggal Kembali",
+                    db_column="tanggal_kembali")
     id_pegawai = models.ForeignKey(Pegawai,
                     verbose_name="Pegawai",
                     db_column="id_pegawai")
