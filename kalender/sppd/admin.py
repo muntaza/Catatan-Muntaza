@@ -43,7 +43,7 @@ class PegawaiAdmin(admin.ModelAdmin):
 
 
 class SPPDAdmin(admin.ModelAdmin):
-    list_display = ("id_skpd", "no_sppd", "id_pegawai", "tanggal_berangkat", "tanggal_kembali", "keterangan")
+    list_display = ("no_sppd", "id_skpd", "id_pegawai", "tanggal_berangkat", "tanggal_kembali", "keterangan")
     ordering = ["no_sppd"]
     save_as = True
     date_hierarchy = 'tanggal_berangkat'
