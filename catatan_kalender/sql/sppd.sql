@@ -5,6 +5,7 @@ CREATE VIEW view_sppd AS
 
 
 SELECT
+
 pegawai.nama_pegawai,
 pegawai.nip,
 pegawai.pangkat,
@@ -14,8 +15,9 @@ skpd.nama_skpd,
 sppd.no_sppd,
 sppd.tanggal_berangkat,
 sppd.tanggal_kembali,
+sppd.id_pegawai,
+sppd.id_skpd,
 sppd.keterangan
-
 
 
 FROM
