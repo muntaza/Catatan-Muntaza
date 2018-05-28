@@ -33,7 +33,9 @@ view_sppd_rangkap
 
 
 WHERE
-1 = 1
+1 = 1 AND
+(tanggal_berangkat <= tanggal_kembali_sebelum OR
+tanggal_kembali >= tanggal_berangkat_sesudah)
 
 
 ORDER BY id_pegawai, rank

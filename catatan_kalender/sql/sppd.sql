@@ -27,6 +27,7 @@ join skpd on skpd.id = pegawai.id_skpd
 WHERE
 1 = 1
 
+ORDER BY sppd.id_pegawai, sppd.tanggal_berangkat
 ;
 
 
