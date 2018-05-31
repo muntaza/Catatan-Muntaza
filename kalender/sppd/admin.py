@@ -3,6 +3,8 @@ from django.contrib import admin
 from sppd.models import Provinsi, Kabupaten, LokasiBidang, SKPD
 from sppd.models import StatusPegawai, Pegawai, SPPD
 
+from sppd.forms import DibayarForm
+
 
 class ProvinsiAdmin(admin.ModelAdmin):
     list_display = ("kode_provinsi", "nama_provinsi")
@@ -43,8 +45,10 @@ class PegawaiAdmin(admin.ModelAdmin):
 
 
 class SPPDAdmin(admin.ModelAdmin):
-    list_display = ("no_sppd", "id_skpd", "id_pegawai", "tanggal_berangkat", "tanggal_kembali", "keterangan")
+    list_display = ("no_sppd", "id_skpd", "id_pegawai", "tanggal_berangkat",
+                    "tanggal_kembali", "dibayar", "keterangan", )
     ordering = ["no_sppd"]
+    form = DibayarForm
     save_as = True
     date_hierarchy = 'tanggal_berangkat'
     search_fields = ['no_sppd']

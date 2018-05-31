@@ -133,6 +133,9 @@ class SPPD(models.Model):
                     db_column="tanggal_berangkat")
     tanggal_kembali = models.DateField("Tanggal Kembali",
                     db_column="tanggal_kembali")
+    dibayar = models.DecimalField("Dibayar (Rp)",
+                    max_digits=15, decimal_places=0, default=0,
+                    db_column="dibayar")
     keterangan = models.CharField("Keterangan", max_length=200,
                     db_column="keterangan")
 

@@ -17,6 +17,7 @@ sppd.tanggal_berangkat,
 sppd.tanggal_kembali,
 sppd.id_pegawai,
 sppd.id_skpd,
+sppd.dibayar,
 sppd.keterangan,
 
 lag(sppd.tanggal_berangkat) OVER urutan AS tanggal_berangkat_sebelum,

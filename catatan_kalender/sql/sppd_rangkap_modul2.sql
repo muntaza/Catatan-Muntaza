@@ -17,6 +17,7 @@ tanggal_berangkat,
 tanggal_kembali,
 id_pegawai,
 id_skpd,
+dibayar,
 keterangan,
 
 tanggal_berangkat_sebelum,
