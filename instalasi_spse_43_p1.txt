@@ -485,6 +485,7 @@ openbsd$
 
 $ rsync -P -e ssh user@hostname.domain:/folder/  /folder
 
+
 ## Restore database
 
 [muntaza@lpse ~]$ ls
