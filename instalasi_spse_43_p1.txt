@@ -1,6 +1,5 @@
 Bismillah,
 
-
 Instalasi SPSE v4.3 dengan Menggunakan CentOS 7
 
 # Asumsi:
