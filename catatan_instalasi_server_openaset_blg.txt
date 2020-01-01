@@ -1,0 +1,1150 @@
+Instalasi Server OpenPersediaan pada OpenBSD 6.5
+
+
+muntaza@E202SA:~/working7/git/Open_Persediaan$ ssh 192.168.0.3
+muntaza@192.168.0.3's password:
+Last login: Thu Jun  6 11:38:29 2019 from 192.168.0.2
+OpenBSD 6.5 (GENERIC.MP) #3: Sat Apr 13 14:48:43 MDT 2019
+
+Welcome to OpenBSD: The proactively secure Unix-like operating system.
+
+Please use the sendbug(1) utility to report bugs in the system.
+Before reporting a bug, please try to reproduce it with the latest
+version of the code.  With bug reports, please try to ensure that
+enough information to reproduce the problem is enclosed, and if a
+known fix for it exists, include that as well.
+
+thinkpad$
+
+Aktifkan doas
+
+thinkpad$
+thinkpad$
+thinkpad$
+thinkpad$
+thinkpad$ ls
+thinkpad$ su
+Password:
+thinkpad#
+thinkpad#
+thinkpad# ls
+.Xdefaults .cshrc     .cvsrc     .login     .mailrc    .profile   .ssh
+thinkpad# cd /etc/examples/
+thinkpad# ls
+acme-client.conf   eigrpd.conf        ipsec.conf         ospf6d.conf        rc.local           sensorsd.conf
+bgpd.conf          exports            ldapd.conf         ospfd.conf         rc.securelevel     snmpd.conf
+chio.conf          hostapd.conf       ldpd.conf          pf.conf            rc.shutdown        sysctl.conf
+dhclient.conf      httpd.conf         man.conf           printcap           relayd.conf        unwind.conf
+dhcpd.conf         ifstated.conf      mixerctl.conf      rad.conf           remote             vm.conf
+doas.conf          iked.conf          mrouted.conf       radiusd.conf       ripd.conf          wsconsctl.conf
+dvmrpd.conf        inetd.conf         ntpd.conf          rbootd.conf        sasyncd.conf       ypldap.conf
+thinkpad# cp doas.conf /etc/
+thinkpad# cd ..
+thinkpad# ls
+X11             fbtab           iked            mail.rc         newsyslog.conf  rc              soii.key
+acme            firmware        installurl      mailer.conf     npppd           rc.conf         spwd.db
+amd             fonts           isakmpd         master.passwd   ntpd.conf       rc.d            ssh
+authpf          fstab           ksh.kshrc       moduli          passwd          resolv.conf     ssl
+changelist      ftpusers        ldap            monthly         pf.conf         rmt             syslog.conf
+daily           gettytab        localtime       motd            pf.os           rpc             termcap
+disktab         group           locate.rc       mtree           ppp             services        ttys
+doas.conf       hostname.em0    login.conf      mygate          protocols       shells          weekly
+dumpdates       hosts           magic           myname          pwd.db          signify
+examples        hotplug         mail            netstart        random.seed     skel
+thinkpad# pwd
+/etc
+thinkpad# vim doas.conf
+ksh: vim: not found
+thinkpad# vi doas.conf
+thinkpad# ^D
+thinkpad$ id muntaza
+uid=1000(muntaza) gid=1000(muntaza) groups=1000(muntaza), 0(wheel)
+thinkpad$ doas su
+doas (muntaza@thinkpad.balangankab.go.id) password:
+thinkpad# ^D
+thinkpad$
+
+
+
+
+thinkpad$ diff sshd_config sshd_config_asli
+55c55
+< PasswordAuthentication no
+---
+> #PasswordAuthentication yes
+59c59
+< ChallengeResponseAuthentication no
+---
+> #ChallengeResponseAuthentication yes
+73,74c73,74
+< ClientAliveInterval 120
+< ClientAliveCountMax 720
+---
+> #ClientAliveInterval 0
+> #ClientAliveCountMax 3
+thinkpad$ doas sshd -t
+thinkpad$ doas rcctl restart sshd
+sshd(ok)
+sshd(ok)
+thinkpad$ ^D
+
+
+
+muntaza@E202SA:~/.ssh$ ssh muntaza@192.168.0.3
+Last login: Thu Jun  6 12:03:01 2019 from 192.168.0.2
+OpenBSD 6.5 (GENERIC.MP) #1: Mon May 27 18:27:59 CEST 2019
+
+Welcome to OpenBSD: The proactively secure Unix-like operating system.
+
+Please use the sendbug(1) utility to report bugs in the system.
+Before reporting a bug, please try to reproduce it with the latest
+version of the code.  With bug reports, please try to ensure that
+enough information to reproduce the problem is enclosed, and if a
+known fix for it exists, include that as well.
+
+thinkpad$ doas /usr/sbin/pkg_add rsync
+doas (muntaza@thinkpad.balangankab.go.id) password:
+quirks-3.124 signed on 2019-04-15T12:10:16Z
+quirks-3.124: ok
+Ambiguous: choose package for rsync
+a	0: <None>
+	1: rsync-3.1.3
+	2: rsync-3.1.3-iconv
+Your choice: 1
+rsync-3.1.3: ok
+The following new rcscripts were installed: /etc/rc.d/rsyncd
+See rcctl(8) for details.
+thinkpad$ doas syspatch
+thinkpad$ doas syspatch -l
+001_rip6cksum
+002_srtp
+003_mds
+thinkpad$ doas /usr/sbin/pkg_add vim
+quirks-3.124 signed on 2019-04-15T12:10:16Z
+Ambiguous: choose package for vim
+a	0: <None>
+	1: vim-8.1.1048-gtk2
+	2: vim-8.1.1048-gtk2-lua
+	3: vim-8.1.1048-gtk2-perl-python-ruby
+	4: vim-8.1.1048-gtk2-perl-python3-ruby
+	5: vim-8.1.1048-gtk3
+	6: vim-8.1.1048-gtk3-lua
+	7: vim-8.1.1048-gtk3-perl-python-ruby
+	8: vim-8.1.1048-gtk3-perl-python3-ruby
+	9: vim-8.1.1048-no_x11
+	10: vim-8.1.1048-no_x11-lua
+	11: vim-8.1.1048-no_x11-perl-python-ruby
+	12: vim-8.1.1048-no_x11-perl-python3-ruby
+	13: vim-8.1.1048-no_x11-python
+	14: vim-8.1.1048-no_x11-python3
+	15: vim-8.1.1048-no_x11-ruby
+Your choice: 13
+vim-8.1.1048-no_x11-python:libiconv-1.14p3: ok
+vim-8.1.1048-no_x11-python:gettext-0.19.8.1p3: ok
+vim-8.1.1048-no_x11-python:sqlite3-3.27.2p0: ok
+vim-8.1.1048-no_x11-python:libffi-3.2.1p5: ok
+vim-8.1.1048-no_x11-python:bzip2-1.0.6p9: ok
+vim-8.1.1048-no_x11-python:python-2.7.16: ok
+vim-8.1.1048-no_x11-python: ok
+--- +python-2.7.16 -------------------
+If you want to use this package as your default system python, as root
+create symbolic links like so (overwriting any previous default):
+ ln -sf /usr/local/bin/python2.7 /usr/local/bin/python
+ ln -sf /usr/local/bin/python2.7-2to3 /usr/local/bin/2to3
+ ln -sf /usr/local/bin/python2.7-config /usr/local/bin/python-config
+ ln -sf /usr/local/bin/pydoc2.7  /usr/local/bin/pydoc
+thinkpad$ vi /tmp/ln.sh
+thinkpad$ cat /tmp/ln.sh
+ ln -sf /usr/local/bin/python2.7 /usr/local/bin/python
+ ln -sf /usr/local/bin/python2.7-2to3 /usr/local/bin/2to3
+ ln -sf /usr/local/bin/python2.7-config /usr/local/bin/python-config
+ ln -sf /usr/local/bin/pydoc2.7  /usr/local/bin/pydoc
+thinkpad$ doas sh /tmp/ln.sh
+thinkpad$ ls -l /usr/local/bin/python
+lrwxr-xr-x  1 root  wheel  24 Jun  6 12:09 /usr/local/bin/python -> /usr/local/bin/python2.7
+thinkpad$
+
+
+thinkpad$ doas rcctl set ntpd flags -s
+thinkpad$ cat /etc/rc.conf.local
+ntpd_flags=-s
+thinkpad$
+
+
+thinkpad$ doas /sbin/pfctl -f /etc/pf.conf
+thinkpad$ doas cat /etc/pf.conf
+#	$OpenBSD: pf.conf,v 1.55 2017/12/03 20:40:04 sthen Exp $
+#
+# See pf.conf(5) and /etc/examples/pf.conf
+
+set skip on lo
+
+block return	# block stateless traffic
+pass out	# establish keep-state
+
+
+services = "{ 22, 80, 443 }"
+
+pass in proto tcp to port $services
+
+
+# By default, do not permit remote connections to X11
+block return in on ! lo0 proto tcp to port 6000:6010
+
+# Port build user does not need network
+block return out log proto {tcp udp} user _pbuild
+thinkpad$
+
+
+thinkpad$ doas /usr/sbin/pkg_add py-pip
+quirks-3.124 signed on 2019-04-15T12:10:16Z
+py-pip-9.0.3:py-setuptools-40.0.0v0: ok
+py-pip-9.0.3: ok
+--- +py-pip-9.0.3 -------------------
+If you want to use this package as default pip, as root create a
+symbolic link like so (overwriting any previous default):
+    ln -sf /usr/local/bin/pip2.7 /usr/local/bin/pip
+thinkpad$ doas ln -sf /usr/local/bin/pip2.7 /usr/local/bin/pip
+thinkpad$ doas pip install --upgrade pip
+The directory '/home/muntaza/.cache/pip/http' or its parent directory is not owned by the current user and the cache has been disabled. Please check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+The directory '/home/muntaza/.cache/pip' or its parent directory is not owned by the current user and caching wheels has been disabled. check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+Collecting pip
+  Downloading https://files.pythonhosted.org/packages/5c/e0/be401c003291b56efc55aeba6a80ab790d3d4cece2778288d65323009420/pip-19.1.1-py2.py3-none-any.whl (1.4MB)
+    100% |################################| 1.4MB 429kB/s
+Installing collected packages: pip
+  Found existing installation: pip 9.0.3
+    Uninstalling pip-9.0.3:
+      Successfully uninstalled pip-9.0.3
+Successfully installed pip-19.1.1
+thinkpad$
+
+
+
+
+thinkpad$ pip --version
+pip 19.1.1 from /usr/local/lib/python2.7/site-packages/pip (python 2.7)
+thinkpad$
+thinkpad$ doas pip install Django==1.11.21
+doas (muntaza@thinkpad.balangankab.go.id) password:
+DEPRECATION: Python 2.7 will reach the end of its life on January 1st, 2020. Please upgrade your Python as Python 2.7 won't be maintained after that date. A future version of pip will drop support for Python 2.7.
+WARNING: The directory '/home/muntaza/.cache/pip/http' or its parent directory is not owned by the current user and the cache has been disabled. Please check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+WARNING: The directory '/home/muntaza/.cache/pip' or its parent directory is not owned by the current user and caching wheels has been disabled. check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+Collecting Django==1.11.21
+  Downloading https://files.pythonhosted.org/packages/a2/84/9f66e359ba8e63cf9b54f6815ed55188dda43cd1cc951a8bb95542dee956/Django-1.11.21-py2.py3-none-any.whl (6.9MB)
+     |################################| 7.0MB 1.8MB/s
+Collecting pytz (from Django==1.11.21)
+  Downloading https://files.pythonhosted.org/packages/3d/73/fe30c2daaaa0713420d0382b16fbb761409f532c56bdcc514bf7b6262bb6/pytz-2019.1-py2.py3-none-any.whl (510kB)
+     |################################| 512kB 3.2MB/s
+Installing collected packages: pytz, Django
+Successfully installed Django-1.11.21 pytz-2019.1
+
+
+
+thinkpad$ django-admin --version
+1.11.21
+thinkpad$
+
+
+
+thinkpad$ sudo /usr/sbin/pkg_add apache-httpd
+ksh: sudo: not found
+thinkpad$ doas /usr/sbin/pkg_add apache-httpd
+quirks-3.124 signed on 2019-04-15T12:10:16Z
+apache-httpd-2.4.39p1:xz-5.2.4: ok
+apache-httpd-2.4.39p1:brotli-1.0.7: ok
+apache-httpd-2.4.39p1:nghttp2-1.37.0: ok
+apache-httpd-2.4.39p1:curl-7.64.1: ok
+apache-httpd-2.4.39p1:libxml-2.9.8p1: ok
+apache-httpd-2.4.39p1:apr-1.6.5p0: ok
+apache-httpd-2.4.39p1:db-4.6.21p6v0: ok
+apache-httpd-2.4.39p1:apr-util-1.6.1p2: ok
+apache-httpd-2.4.39p1:jansson-2.12: ok
+apache-httpd-2.4.39p1:pcre-8.41p2: ok
+apache-httpd-2.4.39p1: ok
+Running tags: ok
+The following new rcscripts were installed: /etc/rc.d/apache2
+See rcctl(8) for details.
+thinkpad$
+
+
+
+thinkpad$ doas /usr/sbin/pkg_add php-gd php-pdo_pgsql php-pgsql php-apache
+quirks-3.124 signed on 2019-04-15T12:10:16Z
+Ambiguous: choose package for php-gd
+a	0: <None>
+	1: php-gd-7.1.28
+	2: php-gd-7.2.17
+	3: php-gd-7.3.4
+Your choice: 2
+php-gd-7.2.17:jpeg-2.0.2v0: ok
+php-gd-7.2.17:png-1.6.35: ok
+php-gd-7.2.17:libsodium-1.0.17: ok
+php-gd-7.2.17:oniguruma-6.9.1: ok
+php-gd-7.2.17:femail-1.0p1: ok
+php-gd-7.2.17:femail-chroot-1.0p3: ok
+php-gd-7.2.17:php-7.2.17: ok
+php-gd-7.2.17: ok
+Ambiguous: choose package for php-pdo_pgsql
+a	0: <None>
+	1: php-pdo_pgsql-7.1.28
+	2: php-pdo_pgsql-7.2.17
+	3: php-pdo_pgsql-7.3.4
+Your choice: 2
+php-pdo_pgsql-7.2.17:postgresql-client-11.2: ok
+php-pdo_pgsql-7.2.17: ok
+Ambiguous: choose package for php-pgsql
+a	0: <None>
+	1: php-pgsql-7.1.28
+	2: php-pgsql-7.2.17
+	3: php-pgsql-7.3.4
+Your choice: 2
+php-pgsql-7.2.17: ok
+Ambiguous: choose package for php-apache
+a	0: <None>
+	1: php-apache-7.1.28
+	2: php-apache-7.2.17
+	3: php-apache-7.3.4
+Your choice: 2
+php-apache-7.2.17: ok
+The following new rcscripts were installed: /etc/rc.d/php72_fpm
+See rcctl(8) for details.
+New and changed readme(s):
+	/usr/local/share/doc/pkg-readmes/femail-chroot
+	/usr/local/share/doc/pkg-readmes/php-7.2
+thinkpad$
+
+
+thinkpad$ doas /usr/sbin/pkg_add postgresql-server postgresql-contrib
+quirks-3.124 signed on 2019-04-15T12:10:16Z
+useradd: Warning: home directory `/var/postgresql' doesn't exist, and -m was not specified
+postgresql-server-11.2p1: ok
+postgresql-contrib-11.2: ok
+The following new rcscripts were installed: /etc/rc.d/postgresql
+See rcctl(8) for details.
+New and changed readme(s):
+	/usr/local/share/doc/pkg-readmes/postgresql-server
+thinkpad$
+
+
+thinkpad$ doas /usr/sbin/pkg_add ap2-mod_wsgi
+doas (muntaza@thinkpad.balangankab.go.id) password:
+quirks-3.124 signed on 2019-04-15T12:10:16Z
+ap2-mod_wsgi-4.6.5p0: ok
+New and changed readme(s):
+	/usr/local/share/doc/pkg-readmes/ap2-mod_wsgi
+thinkpad$
+thinkpad$ doas pip install psycopg2
+DEPRECATION: Python 2.7 will reach the end of its life on January 1st, 2020. Please upgrade your Python as Python 2.7 won't be maintained after that date. A future version of pip will drop support for Python 2.7.
+WARNING: The directory '/home/muntaza/.cache/pip/http' or its parent directory is not owned by the current user and the cache has been disabled. Please check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+WARNING: The directory '/home/muntaza/.cache/pip' or its parent directory is not owned by the current user and caching wheels has been disabled. check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+Collecting psycopg2
+  Downloading https://files.pythonhosted.org/packages/23/7e/93c325482c328619870b6cd09370f6dbe1148283daca65115cd63642e60f/psycopg2-2.8.2.tar.gz (368kB)
+     |################################| 368kB 235kB/s
+Installing collected packages: psycopg2
+  Running setup.py install for psycopg2 ... done
+Successfully installed psycopg2-2.8.2
+thinkpad$
+
+
+
+thinkpad$ pip list
+DEPRECATION: Python 2.7 will reach the end of its life on January 1st, 2020. Please upgrade your Python as Python 2.7 won't be maintained after that date. A future version of pip will drop support for Python 2.7.
+Package    Version
+---------- -------
+Django     1.11.21
+pip        19.1.1
+psycopg2   2.8.2
+pytz       2019.1
+setuptools 40.0.0
+thinkpad$
+
+
+
+thinkpad$ doas /usr/sbin/pkg_add wget
+quirks-3.124 signed on 2019-04-15T12:10:16Z
+wget-1.20.2:pcre2-10.32: ok
+wget-1.20.2:libunistring-0.9.7: ok
+wget-1.20.2:libidn2-2.0.0p0: ok
+wget-1.20.2:libpsl-0.20.2: ok
+wget-1.20.2: ok
+thinkpad$ wget -c https://stable.mtier.org/openup
+--2019-06-06 14:08:40--  https://stable.mtier.org/openup
+Resolving stable.mtier.org (stable.mtier.org)... 80.249.160.224, 2001:4c48:2:8001::5
+Connecting to stable.mtier.org (stable.mtier.org)|80.249.160.224|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 11450 (11K) [application/octet-stream]
+Saving to: 'openup'
+
+openup                       100%[============================================>]  11.18K  --.-KB/s    in 0s
+
+2019-06-06 14:08:42 (95.8 MB/s) - 'openup' saved [11450/11450]
+
+thinkpad$
+
+
+
+
+thinkpad$ doas su _postgresql
+doas (muntaza@thinkpad.balangankab.go.id) password:
+thinkpad$ cd
+thinkpad$ id
+uid=503(_postgresql) gid=503(_postgresql) groups=503(_postgresql)
+thinkpad$ ls
+thinkpad$ pwd
+/var/postgresql
+thinkpad$ mkdir data
+thinkpad$ ls -ld data
+drwxr-xr-x  2 _postgresql  _postgresql  512 Jun  6 14:14 data
+thinkpad$ chmod -R o-rwx data
+thinkpad$ ls -ld data
+drwxr-x---  2 _postgresql  _postgresql  512 Jun  6 14:14 data
+thinkpad$
+thinkpad$
+thinkpad$ initdb -D /var/postgresql/data -U _postgresql -A md5 -W
+The files belonging to this database system will be owned by user "_postgresql".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "C".
+The default database encoding has accordingly been set to "SQL_ASCII".
+The default text search configuration will be set to "english".
+
+Data page checksums are disabled.
+
+Enter new superuser password:
+Enter it again:
+
+fixing permissions on existing directory /var/postgresql/data ... ok
+creating subdirectories ... ok
+selecting default max_connections ... 30
+selecting default shared_buffers ... 128MB
+selecting dynamic shared memory implementation ... posix
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... ok
+
+Success. You can now start the database server using:
+
+    pg_ctl -D /var/postgresql/data -l logfile start
+
+thinkpad$
+
+
+
+
+thinkpad$ exit
+thinkpad$ id
+uid=1000(muntaza) gid=1000(muntaza) groups=1000(muntaza), 0(wheel)
+thinkpad$
+
+
+
+thinkpad$
+thinkpad$ doas sh openup
+===> Checking for openup update
+===> Downloading and installing public key
+===> Installing/updating syspatches
+===> Updating package(s)
+quirks-3.124 signed on 2019-04-15T12:10:16Z
+ap2-mod_wsgi-4.6.5p0:curl-7.64.1->7.64.1p0: ok
+php-7.2.17->7.2.18 forward dependencies:
+| Dependencies of php-pdo_pgsql-7.2.17 on php-7.2.17 don't match
+| Dependencies of php-apache-7.2.17 on php-7.2.17 don't match
+| Dependencies of php-pgsql-7.2.17 on php-7.2.17 don't match
+| Dependencies of php-gd-7.2.17 on php-7.2.17 don't match
+Merging php-pdo_pgsql-7.2.17->7.2.18 (ok)
+Merging php-apache-7.2.17->7.2.18 (ok)
+Merging php-pgsql-7.2.17->7.2.18 (ok)
+Merging php-gd-7.2.17->7.2.18 (ok)
+php-7.2.18+php-apache-7.2.1...:png-1.6.35->1.6.35p0: ok
+postgresql-client-11.2->11.3 forward dependencies:
+| Dependencies of postgresql-contrib-11.2 on postgresql-client-=11.2 don't match
+| Dependencies of postgresql-server-11.2p1 on postgresql-client-=11.2 don't match
+Merging postgresql-contrib-11.2->11.3 (ok)
+Merging postgresql-server-11.2p1->11.3 (ok)
+php-7.2.18+php-apache-7.2.1...:postgresql-client-11.2+postgresql-contrib-11.2+postgresql-server-11.2p1->postgresql-client-11.3+postgresql-contrib-11.3+postgresql-server-11.3: ok
+php-7.2.17+php-apache-7.2.17+php-gd-7.2.17+php-pdo_pgsql-7.2.17+php-pgsql-7.2.17->php-7.2.18+php-apache-7.2.18+php-gd-7.2.18+php-pdo_pgsql-7.2.18+php-pgsql-7.2.18: ok
+wget-1.20.2->1.20.3: ok
+Read shared items: ok
+
+
+
+
+
+
+thinkpad$ cd /etc/
+thinkpad$ doas cp php-7.2.sample/*.ini php-7.2/
+doas (muntaza@thinkpad.balangankab.go.id) password:
+thinkpad$ cd /var/www/conf/
+thinkpad$ ls
+bgplg.css       bgplg.foot      bgplg.head      modules         modules.sample
+thinkpad$ doas cp modules.sample/php-7.2.conf modules
+thinkpad$
+
+
+
+thinkpad$ cat /etc/hosts
+127.0.0.1	localhost
+::1		localhost
+192.168.0.3	thinkpad.balangankab.go.id thinkpad
+thinkpad$
+
+
+
+
+thinkpad$ cat .cvsrc
+# $OpenBSD: dot.cvsrc,v 1.1 2013/03/31 21:46:53 espie Exp $
+#
+cvs -d muntaza@muhammad.muntaza.id:/home/muntaza/data/cvsroot
+diff -uNp
+update -Pd
+checkout -P
+thinkpad$
+
+
+thinkpad$ doas mkdir django
+doas (muntaza@thinkpad.balangankab.go.id) password:
+thinkpad$
+thinkpad$ doas chown muntaza:www django
+thinkpad$ ls -ld django/
+drwxr-xr-x  2 muntaza  www  512 Jun  6 14:58 django/
+thinkpad$
+
+
+thinkpad$ cvs co kabupaten
+thinkpad$ cvs co persediaan
+thinkpad$ cvs co persediaan_2019
+
+
+thinkpad$ doas cp wsconsctl.conf /etc/
+doas (muntaza@thinkpad.balangankab.go.id) password:
+thinkpad$ cd /etc/
+
+thinkpad$ doas vi /etc/wsconsctl.conf
+thinkpad$ cat /etc/wsconsctl.conf
+#	$OpenBSD: wsconsctl.conf,v 1.1 2014/07/16 13:21:33 deraadt Exp $
+#
+# wscons configurable parameters
+#
+#keyboard.repeat.del1=200	# change keyboard repeat/delay
+#keyboard.repeat.deln=50
+#keyboard.encoding=ru		# use different keyboard encoding
+#keyboard.bell.volume=0		# mute keyboard beep
+#display.vblank=on		# enable vertical sync blank for screen burner
+display.screen_off=60000	# set screen burner timeout to 60 seconds
+#display.msact=off		# disable screen unburn w/ mouse
+thinkpad$
+
+
+
+
+thinkpad# cat nsd.conf
+# $OpenBSD: nsd.conf,v 1.13 2018/08/16 17:59:12 florian Exp $
+
+server:
+	hide-version: yes
+	verbosity: 1
+	database: "" # disable database
+    	interface: 192.168.0.3
+
+
+remote-control:
+        control-enable: yes
+        control-interface: /var/run/nsd.sock
+
+zone:
+        name: "balangankab.go.id"
+        zonefile: "master/balangankab.go.id.zone"
+
+zone:
+        name: "0.168.192.in-addr.arpa"
+        zonefile: "master/0.168.192.in-addr.arpa.zone"
+thinkpad# pwd
+/var/nsd/etc
+thinkpad#
+
+
+
+thinkpad# pwd
+/var/nsd/zones/master
+thinkpad# cat 0.168.192.in-addr.arpa.zone
+$TTL 86400
+@       IN      SOA     aset.balangankab.go.id.         root.localhost (
+                        15      ; serial
+                        28800   ; refresh
+                        7200    ; retry
+                        604800  ; expire
+                        86400   ; ttl
+                        )
+
+@       IN      NS      192.168.0.3.
+
+3       IN      PTR     aset.balangankab.go.id.
+thinkpad# cat balangankab.go.id.zone
+$TTL 86400
+@       IN      SOA     aset.balangankab.go.id.         root.localhost (
+                        15      ; serial
+                        28800   ; refresh
+                        7200    ; retry
+                        604800  ; expire
+                        86400   ; ttl
+                        )
+
+        IN      NS      aset
+aset    IN      A       192.168.0.3
+
+
+
+
+
+thinkpad$ cat /var/unbound/etc/unbound.conf
+# $OpenBSD: unbound.conf,v 1.14 2018/12/16 20:41:30 tim Exp $
+
+server:
+	interface: 127.0.0.1
+	#interface: 127.0.0.1@5353	# listen on alternative port
+	interface: ::1
+
+	access-control: 0.0.0.0/0 refuse
+	access-control: 127.0.0.0/8 allow
+	access-control: ::0/0 refuse
+	access-control: ::1 allow
+
+	hide-identity: yes
+	hide-version: yes
+
+        local-zone: "balangankab.go.id." static
+        local-data: "aset.balangankab.go.id. IN A 192.168.0.3"
+        local-zone: "0.168.192.in-addr.arpa." static
+        local-data-ptr: "192.168.0.3 aset.balangankab.go.id"
+
+remote-control:
+	control-enable: yes
+	control-interface: /var/run/unbound.sock
+
+# Use an upstream forwarder (recursive resolver) for some or all zones.
+#
+forward-zone:
+	name: "."				# use for ALL queries
+	forward-addr: 8.8.8.8			# DNS Google
+	forward-first: yes			# try direct if forwarder fails
+thinkpad$
+
+
+
+thinkpad$ doas rcctl -f restart unbound
+unbound(ok)
+unbound(ok)
+thinkpad$ doas rcctl -f restart nsd
+nsd(ok)
+nsd(ok)
+thinkpad$
+
+
+
+thinkpad$ doas rcctl enable unbound
+doas (muntaza@thinkpad.balangankab.go.id) password:
+thinkpad$ doas rcctl enable nsd
+thinkpad$ cat /etc/rc.conf.local
+nsd_flags=
+ntpd_flags=-s
+unbound_flags=
+thinkpad$ doas rcctl enable apache2
+thinkpad$ doas rcctl enable postgresql
+thinkpad$ cat /etc/rc.conf.local
+nsd_flags=
+ntpd_flags=-s
+pkg_scripts=apache2 postgresql
+unbound_flags=
+thinkpad$
+thinkpad$
+thinkpad$ cat /etc/resolv.conf
+lookup file bind
+#nameserver 8.8.8.8
+#nameserver 192.168.0.3
+nameserver 127.0.0.1
+thinkpad$
+
+
+
+
+
+thinkpad$ dig aset.balangankab.go.id
+
+; <<>> DiG 9.4.2-P2 <<>> aset.balangankab.go.id
+;; global options:  printcmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 44602
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;aset.balangankab.go.id.		IN	A
+
+;; ANSWER SECTION:
+aset.balangankab.go.id.	3600	IN	A	192.168.0.3
+
+;; Query time: 0 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1)
+;; WHEN: Thu Jun  6 15:21:59 2019
+;; MSG SIZE  rcvd: 56
+
+thinkpad$
+
+
+
+
+thinkpad$ dig @192.168.0.3 aset.balangankab.go.id
+
+; <<>> DiG 9.4.2-P2 <<>> @192.168.0.3 aset.balangankab.go.id
+; (1 server found)
+;; global options:  printcmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 16260
+;; flags: qr aa rd; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 0
+;; WARNING: recursion requested but not available
+
+;; QUESTION SECTION:
+;aset.balangankab.go.id.		IN	A
+
+;; ANSWER SECTION:
+aset.balangankab.go.id.	86400	IN	A	192.168.0.3
+
+;; AUTHORITY SECTION:
+balangankab.go.id.	86400	IN	NS	aset.balangankab.go.id.
+
+;; Query time: 0 msec
+;; SERVER: 192.168.0.3#53(192.168.0.3)
+;; WHEN: Thu Jun  6 15:24:54 2019
+;; MSG SIZE  rcvd: 70
+
+thinkpad$
+thinkpad$
+thinkpad$ dig @127.0.0.1 aset.balangankab.go.id
+
+; <<>> DiG 9.4.2-P2 <<>> @127.0.0.1 aset.balangankab.go.id
+; (1 server found)
+;; global options:  printcmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 45297
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;aset.balangankab.go.id.		IN	A
+
+;; ANSWER SECTION:
+aset.balangankab.go.id.	3600	IN	A	192.168.0.3
+
+;; Query time: 0 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1)
+;; WHEN: Thu Jun  6 15:25:02 2019
+;; MSG SIZE  rcvd: 56
+
+thinkpad$
+
+
+
+thinkpad# crontab -l
+#
+SHELL=/bin/sh
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+HOME=/var/log
+#
+#minute	hour	mday	month	wday	command
+#
+# rotate log files every hour, if necessary
+0	*	*	*	*	/usr/bin/newsyslog
+# send log file notifications, if necessary
+#1-59	*	*	*	*	/usr/bin/newsyslog -m
+#
+# do daily/weekly/monthly maintenance
+30	1	*	*	*	/bin/sh /etc/daily
+30	3	*	*	6	/bin/sh /etc/weekly
+30	5	1	*	*	/bin/sh /etc/monthly
+#0	*	*	*	*	sleep $((RANDOM \% 2048)) && /usr/libexec/spamd-setup
+
+*/15    *       *       *       *       /usr/sbin/rdate id.pool.ntp.org > /dev/null 2> /dev/null
+*/5     *       *       *       *       /sbin/ping -c3 8.8.8.8 > /dev/null
+*/5     *       *       *       *       /root/bin/cek_shutdown.py
+
+
+
+
+thinkpad# cat cek_shutdown.py
+#!/usr/local/bin/python
+
+import os
+from subprocess import Popen
+from subprocess import PIPE
+from subprocess import call
+
+total = os.popen('sysctl hw.sensors.acpibat0.watthour0 | cut -b 31-35')
+sisa = os.popen('sysctl hw.sensors.acpibat0.watthour3 | cut -b 31-35')
+
+persen = round(100 * (float(sisa.read(5)) / float(total.read(5))), 2)
+#print 'sisa baterai ', persen, '%'
+
+p1 = Popen(["sysctl", "hw.sensors.acpibat0"], stdout=PIPE)
+p2 = Popen(["grep", "discharging"], stdin=p1.stdout, stdout=PIPE)
+p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+output = p2.communicate()[0]
+
+if output and (persen < 15):
+    print "SHUTDOWN 15%"
+    call(["/sbin/halt", "-p"])
+
+if persen < 5:
+    print "SHUTDOWN 5%"
+    call(["/sbin/halt", "-p"])
+
+thinkpad# pwd
+/root/bin
+thinkpad#
+
+
+thinkpad$ id
+uid=503(_postgresql) gid=503(_postgresql) groups=503(_postgresql)
+thinkpad$ pwd
+/var/postgresql/data
+thinkpad$ cat pg_hba.conf | grep local| grep peer
+local   all             all                                     peer
+thinkpad$
+
+
+---
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     peer
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            md5
+# IPv6 local connections:
+host    all             all             ::1/128                 md5
+---
+
+
+
+thinkpad$ psql -U _postgresql
+psql: could not connect to server: No such file or directory
+	Is the server running locally and accepting
+	connections on Unix domain socket "/tmp/.s.PGSQL.5432"?
+thinkpad$ id
+uid=1000(muntaza) gid=1000(muntaza) groups=1000(muntaza), 0(wheel)
+thinkpad$ doas rcctl restart postgresql
+postgresql(ok)
+thinkpad$ psql -U _postgresql
+psql: FATAL:  Peer authentication failed for user "_postgresql"
+thinkpad$ doas su _postgresql
+thinkpad$ id
+uid=503(_postgresql) gid=503(_postgresql) groups=503(_postgresql)
+thinkpad$ psql -U _postgresql
+psql: FATAL:  database "_postgresql" does not exist
+thinkpad$ psql -U _postgresql template1
+psql (11.3)
+Type "help" for help.
+
+template1=#
+
+
+
+thinkpad$ doas su _postgresql
+thinkpad$ cd
+thinkpad$ ls
+data    logfile
+thinkpad$ id
+uid=503(_postgresql) gid=503(_postgresql) groups=503(_postgresql)
+thinkpad$ ls
+data    logfile
+thinkpad$
+thinkpad$
+thinkpad$ id
+uid=503(_postgresql) gid=503(_postgresql) groups=503(_postgresql)
+thinkpad$ psql -U _postgresql template1 < /home/muntaza/sql/global_2019-03-12_14_11.sql
+
+
+
+thinkpad$
+thinkpad$ createdb -U _postgresql -O kabupaten kabupaten
+thinkpad$ createdb -U _postgresql -O persediaan persediaan
+thinkpad$ createdb -U _postgresql -O persediaan_2019 persediaan_2019
+thinkpad$
+
+
+thinkpad$ psql -U _postgresql kabupaten < /home/muntaza/sql/kabupaten_2019-04-16_00_10.sql > /dev/null
+thinkpad$ psql -U _postgresql persediaan < /home/muntaza/sql/persediaan_2019-04-16_00_20.sql > /dev/null
+thinkpad$ psql -U _postgresql persediaan_2019 < /home/muntaza/sql/persediaan_2019_2019-04-16_00_30.sql > /dev/null
+thinkpad$ exit
+
+
+
+thinkpad$ cat /etc/hostname.axe0
+inet 10.0.0.3 255.255.255.0
+thinkpad$ cat /etc/hostname.axe1
+inet 192.168.0.3 255.255.255.0
+thinkpad$
+
+thinkpad$ diff httpd2.conf httpd2.conf_asli
+52c52
+< #Listen 80
+---
+> Listen 80
+91c91
+< LoadModule socache_shmcb_module /usr/local/lib/apache2/mod_socache_shmcb.so
+---
+> #LoadModule socache_shmcb_module /usr/local/lib/apache2/mod_socache_shmcb.so
+149c149
+< LoadModule ssl_module /usr/local/lib/apache2/mod_ssl.so
+---
+> #LoadModule ssl_module /usr/local/lib/apache2/mod_ssl.so
+523c523
+< Include /etc/apache2/extra/httpd-ssl.conf
+---
+> #Include /etc/apache2/extra/httpd-ssl.conf
+thinkpad$
+
+
+
+thinkpad$ diff httpd-default.conf httpd-default.conf_asli
+55c55
+< ServerTokens Prod
+---
+> ServerTokens Full
+thinkpad$ pwd
+/etc/apache2/extra
+thinkpad$
+
+
+
+
+thinkpad$ doas crontab -l
+#
+SHELL=/bin/sh
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+HOME=/var/log
+#
+#minute	hour	mday	month	wday	command
+#
+# rotate log files every hour, if necessary
+0	*	*	*	*	/usr/bin/newsyslog
+# send log file notifications, if necessary
+#1-59	*	*	*	*	/usr/bin/newsyslog -m
+#
+# do daily/weekly/monthly maintenance
+30	1	*	*	*	/bin/sh /etc/daily
+30	3	*	*	6	/bin/sh /etc/weekly
+30	5	1	*	*	/bin/sh /etc/monthly
+#0	*	*	*	*	sleep $((RANDOM \% 2048)) && /usr/libexec/spamd-setup
+
+*/15    *       *       *       *       /usr/sbin/rdate id.pool.ntp.org > /dev/null 2> /dev/null
+*/5     *       *       *       *       /sbin/ping -c3 8.8.8.8 > /dev/null
+*/5     *       *       *       *       /root/bin/cek_shutdown.py
+
+
+# Matikan Apache server jam 0:0
+0       0       *       *       *       rcctl stop apache2 > /dev/null 2>&1
+5       0       *       *       *       rcctl stop apache2 > /dev/null 2>&1
+
+
+# Restart Apache server jam 0:40
+40      0       *       *       *       rcctl restart apache2 > /dev/null 2>&1
+
+
+
+
+
+thinkpad$ diff httpd-ssl.conf httpd-ssl.conf_asli
+52,53c52,53
+< # SSLCipherSuite HIGH:MEDIUM:!MD5:!RC4:!3DES
+< # SSLProxyCipherSuite HIGH:MEDIUM:!MD5:!RC4:!3DES
+---
+> SSLCipherSuite HIGH:MEDIUM:!MD5:!RC4:!3DES
+> SSLProxyCipherSuite HIGH:MEDIUM:!MD5:!RC4:!3DES
+65,66c65,66
+< SSLCipherSuite HIGH:MEDIUM:!SSLv3:!kRSA
+< SSLProxyCipherSuite HIGH:MEDIUM:!SSLv3:!kRSA
+---
+> # SSLCipherSuite HIGH:MEDIUM:!SSLv3:!kRSA
+> # SSLProxyCipherSuite HIGH:MEDIUM:!SSLv3:!kRSA
+125,126c125,126
+< ServerName aset.balangankab.go.id:443
+< ServerAdmin muhammad@muntaza.id
+---
+> ServerName www.example.com:443
+> ServerAdmin you@example.com
+134,250d133
+< ### HSTS
+< Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+<
+< #Konfigurasi Mod_WSGI agar bisa koneksi python dan httpd2 untuk aset
+< LoadModule wsgi_module         /usr/local/lib/apache2/mod_wsgi.so
+<
+< WSGIDaemonProcess aset python-path=/home/django/kabupaten:/usr/local/lib/python2.7/site-packages
+< WSGIProcessGroup aset
+<
+< WSGIScriptAlias /kabupaten /home/django/kabupaten/kabupaten/wsgi.py process-group=aset
+<
+< Alias /robots.txt /home/django/kabupaten/static/robots.txt
+< Alias /favicon.ico /home/django/kabupaten/static/favicon.ico
+<
+< AliasMatch ^/([^/]*\.css) /home/django/kabupaten/static/styles/$1
+<
+< Alias /media /home/django/openaset/media/
+<
+< <Directory /home/django/openaset/media/tanah>
+< Require all granted
+< </Directory>
+<
+< <Directory /home/django/openaset/media/peralatan_mesin>
+< Require all granted
+< </Directory>
+<
+< <Directory /home/django/openaset/media/gedung_bangunan>
+< Require all granted
+< </Directory>
+<
+< <Directory /home/django/openaset/media/jalan_irigasi_jaringan>
+< Require all granted
+< </Directory>
+<
+< <Directory /home/django/openaset/media/atl>
+< Require all granted
+< </Directory>
+<
+<
+< #static pada https
+< Alias /static /home/django/kabupaten/static/
+<
+< <Directory /home/django/kabupaten/media>
+< Require all granted
+< </Directory>
+<
+< <Directory /home/django/kabupaten/static>
+< Require all granted
+< </Directory>
+<
+< <Directory /home/django/kabupaten/kabupaten>
+< <Files wsgi.py>
+< Require all granted
+< </Files>
+< </Directory>
+<
+<
+<
+<
+< #Konfigurasi Mod_WSGI agar bisa koneksi python dan httpd2 untuk persediaan
+< WSGIDaemonProcess persediaan python-path=/home/django/persediaan:/usr/local/lib/python2.7/site-packages
+< WSGIProcessGroup persediaan
+<
+< WSGIScriptAlias /persediaan /home/django/persediaan/persediaan/wsgi.py process-group=persediaan
+<
+< Alias /robots.txt /home/django/persediaan/static/robots.txt
+< Alias /favicon.ico /home/django/persediaan/static/favicon.ico
+<
+<
+< #static pada https
+< Alias /static_persediaan /home/django/persediaan/static/
+<
+< <Directory /home/django/persediaan/static>
+< Require all granted
+< </Directory>
+<
+< <Directory /home/django/persediaan/persediaan>
+< <Files wsgi.py>
+< Require all granted
+< </Files>
+< </Directory>
+<
+<
+<
+<
+<
+<
+<
+< #Konfigurasi Mod_WSGI agar bisa koneksi python dan httpd2 untuk persediaan_2019
+< WSGIDaemonProcess persediaan_2019 python-path=/home/django/persediaan_2019:/usr/local/lib/python2.7/site-packages
+< WSGIProcessGroup persediaan_2019
+<
+< WSGIScriptAlias /persediaan_2019 /home/django/persediaan_2019/persediaan_2019/wsgi.py process-group=persediaan_2019
+<
+< Alias /robots.txt /home/django/persediaan_2019/static/robots.txt
+< Alias /favicon.ico /home/django/persediaan_2019/static/favicon.ico
+<
+<
+< #static pada https
+< Alias /static_persediaan_2019 /home/django/persediaan_2019/static/
+<
+< <Directory /home/django/persediaan_2019/static>
+< Require all granted
+< </Directory>
+<
+< <Directory /home/django/persediaan_2019/persediaan_2019>
+< <Files wsgi.py>
+< Require all granted
+< </Files>
+< </Directory>
+<
+<
+<
+<
+<
+<
+<
+261c144
+< SSLCertificateFile "/etc/ssl/aset_balangankab_go_id.crt"
+---
+> SSLCertificateFile "/etc/apache2/server.crt"
+271c154
+< SSLCertificateKeyFile "/etc/ssl/private/aset_balangankab_go_id.key"
+---
+> SSLCertificateKeyFile "/etc/apache2/server.key"
+282c165
+< SSLCertificateChainFile "/etc/ssl/aset_balangankab_go_id.ca-bundle"
+---
+> #SSLCertificateChainFile "/etc/apache2/server-ca.crt"
+thinkpad$
+
+
+
+
+thinkpad$ doas mv reportico-4.6 laporan
+thinkpad$ doas cp -r laporan laporan_persediaan &
+[1] 11340
+thinkpad$ doas cp -r laporan laporan_persediaan_2019 &
+[2] 95123
+thinkpad$ ls
+bgplg                    laporan                  laporan_persediaan_2019
+index.html               laporan_persediaan       reportico-4.6.zip
+thinkpad$
+[2] + Done                 doas cp -r laporan laporan_persediaan_2019
+[1] - Done                 doas cp -r laporan laporan_persediaan
+thinkpad$
+thinkpad$
+thinkpad$
+thinkpad$ ls
+bgplg                    laporan                  laporan_persediaan_2019
+index.html               laporan_persediaan       reportico-4.6.zip
+thinkpad$ doas chown -R www:www laporan
+thinkpad$ doas chown -R www:www laporan_persediaan
+thinkpad$ doas chown -R www:www laporan_persediaan_2019
+thinkpad$
+
+
+
+thinkpad$ doas mkdir projects_persediaan
+thinkpad$ doas chown -R muntaza:www projects_persediaan
+thinkpad$ doas ln -s projects_persediaan projects
+thinkpad$ ls -l projects
+lrwxr-xr-x  1 root  www  19 Jun  6 21:43 projects -> projects_persediaan
+thinkpad$ cvs co projects_persediaan
+
+
+
+
+
+thinkpad$ doas rm -rf projects
+doas (muntaza@thinkpad.balangankab.go.id) password:
+thinkpad$ doas mkdir projects_persediaan_2019
+thinkpad$ doas ln -s projects_persediaan_2019 projects
+thinkpad$ ls -l projects
+lrwxr-xr-x  1 root  www  24 Jun  6 22:18 projects -> projects_persediaan_2019
+thinkpad$
+
