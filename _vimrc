@@ -182,8 +182,8 @@ EOF
 
 
 
-py sys.path.append('/home/django/pajakdaerah')
-py os.environ ['DJANGO_SETTINGS_MODULE']='pajakdaerah.settings'
+py sys.path.append('/home/django/latihan')
+py os.environ ['DJANGO_SETTINGS_MODULE']='latihan.settings'
 colorscheme cobalt
 " colorscheme Chasing_Logic
 
