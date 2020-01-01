@@ -10,3 +10,9 @@ set autoindent
 syntax on
 filetype plugin on
 filetype indent on
+
+colorscheme cobalt
+" colorscheme Chasing_Logic
+
+filetype on
+set completeopt-=preview
